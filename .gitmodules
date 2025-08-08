@@ -1,0 +1,63 @@
+[submodule ".vim/pack/banoris/start/vim-commentary"]
+	path = .vim/pack/banoris/start/vim-commentary
+	url = https://github.com/tpope/vim-commentary.git
+[submodule ".vim/pack/banoris/start/logsyntax.vim"]
+	path = .vim/pack/banoris/start/logsyntax.vim
+	url = https://github.com/banoris/logsyntax.vim.git
+[submodule ".vim/pack/banoris/start/haskell-vim"]
+	path = .vim/pack/banoris/start/haskell-vim
+	url = https://github.com/neovimhaskell/haskell-vim.git
+[submodule ".vim/pack/banoris/opt/completion-nvim"]
+	path = .vim/pack/banoris/opt/completion-nvim
+	url = https://github.com/nvim-lua/completion-nvim.git
+[submodule ".vim/pack/banoris/opt/nvim-lspconfig"]
+	path = .vim/pack/banoris/opt/nvim-lspconfig
+	url = https://github.com/neovim/nvim-lspconfig.git
+[submodule ".vim/pack/banoris/start/rainbow"]
+	path = .vim/pack/banoris/start/rainbow
+	url = https://github.com/luochen1990/rainbow.git
+[submodule "modules/grc"]
+	path = modules/grc
+	url = https://github.com/garabik/grc.git
+[submodule ".vim/pack/banoris/start/yang.vim"]
+	path = .vim/pack/banoris/start/yang.vim
+	url = https://github.com/nathanalderson/yang.vim.git
+[submodule "ble.sh"]
+	path = ble.sh
+	url = https://github.com/akinomyoga/ble.sh.git
+[submodule ".vim/pack/banoris/opt/indent-blankline.nvim"]
+	path = .vim/pack/banoris/opt/indent-blankline.nvim
+	url = https://github.com/lukas-reineke/indent-blankline.nvim.git
+[submodule ".vim/pack/banoris/start/rainbow_parentheses.vim"]
+	path = .vim/pack/banoris/start/rainbow_parentheses.vim
+	url = https://github.com/junegunn/rainbow_parentheses.vim.git
+[submodule ".vim/pack/banoris/start/vista.vim"]
+	path = .vim/pack/banoris/start/vista.vim
+	url = https://github.com/liuchengxu/vista.vim.git
+[submodule ".vim/pack/banoris/start/nvim-autopairs"]
+	path = .vim/pack/banoris/start/nvim-autopairs
+	url = https://github.com/windwp/nvim-autopairs.git
+[submodule ".vim/pack/banoris/start/vim-startify"]
+	path = .vim/pack/banoris/start/vim-startify
+	url = https://github.com/mhinz/vim-startify.git
+[submodule ".vim/pack/banoris/start/mru"]
+	path = .vim/pack/banoris/start/mru
+	url = https://github.com/yegappan/mru.git
+[submodule ".vim/pack/banoris/start/vim-unimpaired"]
+	path = .vim/pack/banoris/start/vim-unimpaired
+	url = https://github.com/tpope/vim-unimpaired
+[submodule ".vim/pack/banoris/start/gitsigns.nvim"]
+	path = .vim/pack/banoris/start/gitsigns.nvim
+	url = https://github.com/lewis6991/gitsigns.nvim
+[submodule "zsh/plugins/zsh-syntax-highlighting"]
+	path = zsh/plugins/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule "zsh/plugins/zsh-completions"]
+	path = zsh/plugins/zsh-completions
+	url = https://github.com/zsh-users/zsh-completions.git
+[submodule "zsh/plugins/zsh-autosuggestions"]
+	path = zsh/plugins/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions.git
+[submodule "zsh/zinit.git"]
+	path = zsh/zinit.git
+	url = https://github.com/zdharma-continuum/zinit

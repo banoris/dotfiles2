@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# USAGE: jq-viewer
+main () {
+    jq . "$1" | nvim -c 'set syntax=json' -
+}
+
+main "$@"

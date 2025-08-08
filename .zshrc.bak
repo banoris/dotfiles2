@@ -1,0 +1,197 @@
+
+# WA bash_profile in vscode remote ssh terminal
+[[ -f ~/dotfiles-eric/.bashrc.eric ]] && source ~/dotfiles-eric/.bashrc.eric
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# FIXME: can't git clone in corporate
+# Set the directory we want to store zinit and plugins
+# ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/dotfiles/zsh}/zinit.git"
+
+# Download Zinit, if it's not there yet
+if [ ! -d "$ZINIT_HOME" ]; then
+   mkdir -p "$(dirname $ZINIT_HOME)"
+   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+# Source/Load zinit
+source "${ZINIT_HOME}/zinit.zsh"
+
+# Add in zsh plugins
+zinit load $HOME/dotfiles/zsh/plugins/zsh-syntax-highlighting
+zinit load $HOME/dotfiles/zsh/plugins/zsh-completions
+zinit load $HOME/dotfiles/zsh/plugins/zsh-autosuggestions
+
+# Basic auto/tab complete:
+autoload -U compinit
+# Ala fuzzy match
+zstyle ':completion:*' matcher-list \
+  'm:{a-z}={A-Z}' \
+  'l:|=* m:{a-z}={A-Z}' \
+  'r:|=* m:{a-z}={A-Z}' \
+  'r:[^[:alpha:]]||[[:alpha:]]=** m:{a-z}={A-Z}'
+
+# Enable menu selection
+zstyle ':completion:*' menu select
+
+# Show the list immediately when there are multiple matches
+zstyle ':completion:*' list-prompt '%S%M matches available:%s'
+zstyle ':completion:*' select-prompt '%SScrolling: current selection at %p%s'
+# zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' verbose true
+
+zmodload zsh/complist
+compinit
+_comp_options+=(globdots)		# Include hidden files.
+
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# +---------+
+# | HISTORY |
+# +---------+
+
+setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
+# setopt SHARE_HISTORY             # Share history between all sessions.
+setopt HIST_EXPIRE_DUPS_FIRST    # Expire a duplicate event first when trimming history.
+setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS      # Delete an old recorded event if a new event is a duplicate.
+setopt HIST_FIND_NO_DUPS         # Do not display a previously found event.
+setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
+setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
+setopt HIST_VERIFY               # Do not execute immediately upon history expansion.
+export HISTSIZE=3000
+
+# delete word boundary - https://stackoverflow.com/questions/444951/zsh-stop-backward-kill-word-on-directory-delimiter
+autoload -U select-word-style
+select-word-style bash
+
+# Emacs keybindings
+bindkey -e
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
+bindkey '^[w' kill-region
+
+# Aliases
+alias ls='ls --color'
+
+# +---------+
+# | Prompt  |
+# +---------+
+autoload -U colors && colors
+
+[[ -f $HOME/dotfiles/git-prompt.sh ]] && source $HOME/dotfiles/git-prompt.sh
+export GIT_PS1_SHOWDIRTYSTATE=true
+export GIT_PS1_SHOWUNTRACKEDFILES=true
+export GIT_PS1_SHOWUPSTREAM="verbose git"
+
+# export PS1="\[\e[${prompt_color}\][\u@\h \w]\e[35m\$(__git_ps1 '[%s]')\e[0m\e[${prompt_color} \D{%a %H:%M:%S}\n\$([ \j -gt 0 ] && echo [\j])\$\[\e[m\] "
+
+NEWLINE=$'\n'
+export PROMPT="%F{green}[%n@%m %d]%f%F{magenta}$(__git_ps1)%f %F{green}%w %*%f${NEWLINE}$ "
+
+
+# +---------+
+# | Settings/Aliases  |
+# +---------+
+# android setting
+export PATH=$PATH:$HOME/bin
+export USE_CCACHE=1
+export CCACHE_DIR=$HOME/.cache
+export ANDROID_ADB_SERVER_PORT=5037  # 5037 prob when reflashing
+export PATH=$PATH:$HOME/Android/Sdk/build-tools/27.0.1
+
+# Haskell cabal, ghc
+export PATH=$PATH:/opt/ghc/bin/
+# latex
+export PATH=$PATH:/usr/local/texlive/2020/bin/x86_64-linux
+
+# custom binaries
+export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/bin-amd64:$PATH
+export PATH=$HOME/dotfiles/bin:$PATH
+
+# Clang, llvm
+export PATH=$PATH:$HOME/LLVM_10.0.1/bin
+
+# Golang
+export PATH=$PATH:$HOME/go/bin
+
+# Erlang rebar
+export PATH=$PATH:~/.cache/rebar3/bin
+
+export PATH=$PATH:/Applications/IntelliJ\ IDEA.app/Contents/MacOS/
+
+# some more ls aliases
+alias ll='ls -ahlF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+alias gvr='gvim --remote-tab'
+alias asdnoti='notify-send -t 0'
+alias install='sudo apt install'
+alias k='konsole'
+alias asdsshfast='ssh -XC -c blowfish-cbc,arcfour'
+alias noti='notify-send -t 0'
+alias dl='wget --no-check-certificate --user=biskhand --ask-password'
+alias asdbashrc='source ~/.bashrc'
+alias dirs='dirs -v'
+alias h="history | cut -c 8- | nvim -c 'set syntax=bash' -" # `cut` removes the line numbers in history
+# Need `--color=always` to preserve color when piped to another grep
+# NOTE: braces expansion won't work when there's only a single directory. --exclude-dir={.git}
+alias gr2='egrep -srnI --exclude-dir=.git --exclude=tags'
+alias cd2="cd ../.."
+alias cd3="cd ../../.."
+alias cd4="cd ../../../.."
+alias cd5="cd ../../../../.."
+
+
+alias parallel='parallel --will-cite'
+alias gt='gnome-terminal'
+alias fgr-git='git ls-files | grep -i'
+alias g='git'
+alias kc='kubectl'
+
+## USAGE: grep -sr SOMESTUFF | get-file-ext. Why? Grepping some magical
+## strings, check what kind of file has it, deduce something... rinse-n-repeat
+alias get-file-ext="awk -F. '{print \$NF}' | sort -u"
+
+# Copy to primary clipboard. E.g.: $ realpath /some/path | xc
+alias xc="xargs echo -n | xclip -selection c"
+alias psgrep="ps -ef | grep "
+
+# Download a file using curl.
+#   -L -- resolve redirect
+#   -O -- write output to local file
+#   Use netrc file for auth
+alias curl-dl="curl -OL --netrc-file ~/.netrc"
+
+if [[ -n $(which nvim) ]]; then
+    alias v-='nvim -'
+else
+    alias v-='vim -'
+fi
+
+# [[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
+# [[ -f ~/.bash_tmux_completion ]] && source ~/.bash_tmux_completion
+# [[ -f ~/dotfiles/.git-completion.bash ]] && source ~/dotfiles/.git-completion.bash
+# [[ -f ~/dotfiles/.kubectl-completion.bash ]] && source ~/dotfiles/.kubectl-completion.bash
+# [[ -f ~/dotfiles/completions/helm-completion.bash ]] && source ~/dotfiles/completions/helm-completion.bash
+# [[ -f ~/dotfiles/k8-namespace-prompt.sh ]] && source ~/dotfiles/k8-namespace-prompt.sh
+
+# Setup autocomplete for aliases
+#  Note: without 'nospace' a backslash will appear after completion
+# complete -o default -o nospace -F _git g # not working in newer linux/mac?
+# __git_complete g __git_main
+# complete -o default -F __start_kubectl kc
+
+eval "$(fzf --zsh)"

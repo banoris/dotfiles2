@@ -1,0 +1,137 @@
+#
+source ~/dotfiles-eric/.cshrc.user
+
+# If not running interactively, then quit
+if( $?USER == 0 || $?prompt == 0 ) then
+    exit
+endif
+
+# set echo
+# set verbose
+
+# TODO:2025-01-30: Try using bash as default shell
+if ( $?prompt ) then
+    if ( -f ~/.login.user ) source ~/.login.user
+endif
+
+# Trick to differentiate between personal vs other machines, e.g. some pods
+set myname = "eiskbad"
+
+# ===== BEGIN misc {{{
+
+# https://github.com/marckhouzam/tcsh-completion
+#   Setup this to use bash completion inside tcsh
+# source ${HOME}/.tcsh-completion.tcsh
+
+# history setting
+set history=1000
+set histdup=erase
+set histfile=~/.tcsh_history
+# set backslash_quote
+
+# ignorecase autocomplete
+set autolist = ambiguous
+# TODO: good???
+set complete = enhance
+
+
+set path=($HOME/.local/bin $path)
+
+# Disable CTRL-s, use it for fwd search instead. Refer https://stackoverflow.com/a/791800
+stty -ixon
+bindkey "^R" i-search-back
+bindkey "^s" i-search-fwd
+bindkey "^W" backward-delete-word
+
+# ===== END misc }}}
+
+# ===== BEGIN vars {{{
+
+setenv LESS '-SiR'
+
+# ===== END vars }}}
+
+# ===== BEGIN alias {{{
+
+# Rationale: works fine in bash; also, typically you will
+#   copy paste long cmds and press enter
+# this is a long cmd # this cmd will do bla3
+# https://stackoverflow.com/a/47622260/11548113
+alias '#' 'echo \!* >> /dev/null'
+
+# TODO: check if tbox shell
+# if ( "$myname" == "$user") then
+#     alias precmd 'printf "\033]0;`bash $HOME/dotfiles/get-pwd-shortform.bash`\007"' # display current dir as title
+# endif
+
+# https://superuser.com/questions/987321/red-hat-7-terminal-does-not-open-in-cwd
+# alias precmd 'echo -n "\e]7;file://$PWD\a"'
+
+# Wrap make with some logging before and after cmd execution
+# No worries, still execute the same cmd
+# FIXME: recursive alias? Issue when chaining cmds, e.g., gmake ... && gmake ...
+alias gmake1 'set cmd_="\!*" \
+              set filename_="asd_`date +"%m-%d_%H%M-%S"`.log" \
+              echo "START=`date --iso-8601=seconds`" |& tee -a $filename_ \
+              echo "CMD=gmake $cmd_" |& tee -a $filename_ \
+              \gmake $cmd_ |& tee -a $filename_ \
+              echo "END=`date --iso-8601=seconds`" |&tee -a $filename_ \
+              unset filename_ \
+              unset cmd_'
+
+# some more ls aliases
+alias ll 'ls -ahlF'
+alias la 'ls -A'
+alias l 'ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert 'notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+if ( `where nvim` != "" ) then
+    alias v 'nvim -p'
+    alias v- 'nvim -'
+else
+    alias v 'vim -p'
+    alias v- 'vim -'
+endif
+
+alias gvr 'gvim --remote-tab'
+alias asdnoti 'notify-send -t 0'
+alias install 'sudo apt install'
+alias grep 'grep --color=auto'
+alias asdsshfast 'ssh -XC -c blowfish-cbc,arcfour'
+alias noti 'notify-send -t 0'
+alias dirs 'dirs -v'
+alias h 'history | cut -c 8- | v -' # cut is to remove the numbers in history
+alias gr 'grep --exclude-dir=".git" -srnI'
+# tcsh doesn't have function, and multiline alias with if-else seems very complicated
+#   Use this solution instead https://stackoverflow.com/a/27807461/11548113
+alias fgr 'source $HOME/dotfiles/tcsh/fgr.tcsh'
+alias datelog 'date +"%Y_%b_%d_%H_%M"'
+alias cd2 "cd ../.."
+alias cd3 "cd ../../.."
+alias cd4 "cd ../../../.."
+alias cd5 "cd ../../../../.."
+
+alias csv-view 'column -s, -t < \!:1 | v-; '
+
+alias parallel 'parallel --will-cite'
+
+# Copy to primary clipboard. E.g.: $ realpath /some/path | xc
+alias xc "xargs echo -n | xclip -selection c"
+alias psgrep "ps -ef | grep "
+alias gt "gnome-terminal"
+
+# ===== END alias }}}
+
+# Keybindings {{{
+# ===============
+
+# Can be done in ~/.bindings, but easier with no dependency
+
+bindkey "^W" backward-delete-word
+
+
+# END Keybindings }}}
+

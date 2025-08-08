@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# USAGE: v test1.txt:245
+# Translates to: nvim -p test1.txt +245
+# Poor man's open file ala macos iterm2 terminal.
+# Only works for single file, no multiple file support.
+main () {
+    local MYVIM=''
+    local MYFILE=''
+
+    if [[ -n $(which nvim) ]]; then
+        MYVIM='nvim -p'
+    else
+        MYVIM='vim -p'
+    fi
+
+    # Check for ':' in filename, which is the line number from `grep -n`
+    if [[ "$1" == *:* ]]; then
+        MYFILE=$(echo $1 | awk -F':' '{printf "%s +%s", $1, $2}')
+    else
+        MYFILE="$@"
+    fi
+
+    # TODO: need doublequote for file with spaces in name.
+    #   But breaks awk script above to open and goto line
+    $MYVIM $MYFILE
+    # $MYVIM "$MYFILE"
+}
+
+main $@

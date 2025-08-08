@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# USAGE: yq-flatten some-yaml.yaml
+#
+# Example output
+#
+# NOTE: requires newer yq version, doesn't work on 3.3. Tested on yq 4.33.3
+#
+main () {
+    yq -o=props '... comments = ""' $1
+}
+
+main $@

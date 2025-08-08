@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# USAGE: base64-decode some-long-base64-encoded-string
+#
+#
+
+echo -n "$1" | base64 -d
+

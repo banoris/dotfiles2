@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# USAGE: tar-mvdir some-long-name.tar.gz my-output-dir
+#
+# If second arg not given, then create a dir from first
+# arg without the file extension.
+# E.g., mylogs.targz -> mylogs
+#
+main() {
+
+    if [ -z "$2" ]; then
+        local out_dir=${1%.*}
+        mkdir "${out_dir}" && tar xf "$1" -C "${out_dir}" --strip-components 1
+
+        echo "untarred dir: $out_dir"
+    else
+        mkdir "$2" && tar xf "$1" -C "$2" --strip-components 1
+        echo "untarred dir: $2"
+    fi
+
+}
+
+main "$@"

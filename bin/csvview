@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# USAGE: view-csv some-file.csv
+#   View csv file in vim
+column -s, -t < "$1" | v -;

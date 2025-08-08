@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+realpath "$@" | xargs echo -n | xclip -selection c

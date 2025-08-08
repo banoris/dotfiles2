@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+realpath "$@" | xargs echo -n | xclip -selection c

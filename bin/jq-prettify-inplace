@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Reference: https://unix.stackexchange.com/questions/721970/can-i-use-jq-to-prettify-a-file-in-place
+
+# USAGE: jq-prettify-inplace <JSON-FILE>
+main () {
+  local temp=$(mktemp)
+  cp "$1" "$temp"
+  jq . "$temp" > "$1"
+  rm $temp
+}
+
+main $@

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# USAGE: yq-prettify some-stuff.<yaml|json>
+main () {
+    yq -P $1 | v -
+}
+
+main $@

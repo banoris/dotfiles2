@@ -1,0 +1,38 @@
+## Color setting
+# ble-face -s filename_directory underline,fg=33
+ble-face filename_directory=fg=33,underline
+# ble-face command_function=fg=92 # 92 seems too dark
+ble-face command_function=fg=135
+ble-face syntax_function_name=fg=135,bold
+ble-face varname_expr=fg=135,bold
+
+## auto-complete setup. Disable?
+bleopt complete_auto_complete=
+bleopt complete_ambiguous=
+bleopt complete_auto_history=
+
+# bleopt complete_auto_delay=300
+
+# Disable interactive menu_complete. Not used to this,
+# especially since you always spam Tab key.
+# Instead, if still wants this, activate with press Shift-Tab
+# Or, how about don't map 'TAB' 'complete' ?
+bleopt complete_menu_complete=
+
+# 2023-01-11. Very lag typing perfomance!
+# Disabled all below but still slow.
+#   Update 2023-01-24 - works better after server reboot
+# bleopt highlight_syntax=
+# bleopt highlight_filename=
+bleopt highlight_variable=
+
+# 2023-22-12: TODO: what's this setting for?
+#   Tab for file autocomplete still showing multicolumn
+bleopt menu_desc_multicolumn_width=
+
+# https://github.com/akinomyoga/ble.sh/issues/41#issuecomment-583868999
+blehook/eval-after-load complete 'unset -f ble/cmdinfo/complete:vi'
+blehook/eval-after-load complete 'unset -f ble/cmdinfo/complete:cd'
+# Doesn't work. WA: softlink vi to v
+blehook/eval-after-load complete 'unset -f ble/cmdinfo/complete:v'
+blehook/eval-after-load complete 'unset -f ble/cmdinfo/complete:vim'

@@ -1,0 +1,16 @@
+# $XDG_CONFIG_HOME/k9s/views.yml
+k9s:
+  views:
+    # Alters the pod view column layout. Uses GVR as key
+    v1/pods:
+      columns:
+        - NAME
+        - PF
+        - READY
+        - RESTARTS
+        - STATUS
+        - CPU
+        - MEM
+        - AGE
+        - IP
+        - NODE

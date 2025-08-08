@@ -1,0 +1,136 @@
+[color]
+	ui = auto
+
+[includeif "gitdir:~/dev/"]
+    path = ~/dotfiles/.personal.gitconfig
+
+[core]
+    editor = nvim
+    # -S to wrap line
+    pager = less -N
+
+[alias]
+    zip = archive --format=zip -o CODE.zip HEAD
+    # Need the 'cd -- ...' portion because by default, shell command will be run
+    # from top-level directory.
+    # See https://stackoverflow.com/questions/26243145/git-aliases-operate-in-the-wrong-directory
+    st = "! cd -- ${GIT_PREFIX:-.}; git -c color.ui=always status -sb | sort"
+    sta = status
+    cl = clone
+    cv = commit -v
+    co = checkout
+    br = branch
+    r = reset
+    cp = cherry-pick
+    gr = grep -Ii
+    clean-spotless = ! git clean -f -X && git clean -f -d && git checkout .
+
+    # tweak defaults {{{
+    diff = diff --word-diff
+    diff-vdiff = difftool --tool=vimdiff
+    diff-nvdiff = difftool --tool=nvimdiff
+    diff-icdiff = ! git difftool --tool=icdiff | less
+    branch = branch -ra
+    grep = grep -Ii
+    # }}}
+    # commit {{{
+    cm = commit -m
+    cma = commit -a -m
+    ca = commit --amend
+    amend = commit --amend
+    can = commit --amend --no-edit
+    caa = commit -a --amend -C HEAD
+    # }}}
+
+    # log commands {{{
+    lns = log --name-status
+    lnd = log --oneline --no-decorate
+    ls = log --pretty=format:"%C(green)%h\\ %C(yellow)[%cd]%Cred%d\\ %Creset%s%Cblue\\ [%an]" --decorate --date=relative
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    lc  = "!f() { git ll "$1"^.."$1"; }; f"
+    lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
+    lp = log -p -M --follow
+    log-ns = log --name-status
+    # }}}
+
+    # diff {{{
+    d = diff --word-diff
+    dc = diff --cached
+    # diff last commit
+    dlc = diff --cached HEAD^
+    dr  = "!f() { git diff -w "$1"^.."$1"; }; f"
+    diffr  = "!f() { git diff "$1"^.."$1"; }; f"
+	difftv = difftool --tool=vimdiff
+    # }}}
+
+    # reset commands {{{
+    r1 = reset HEAD^
+    r2 = reset HEAD^^
+    rh = reset --hard
+    rh1 = reset HEAD^ --hard
+    rh2 = reset HEAD^^ --hard
+    # }}}
+
+    # git svn {{{
+    svnr = svn rebase
+    svnd = svn dcommit
+    svnl = svn log --oneline --show-commit
+    # }}}
+
+    # stash {{{
+    sl = stash list
+    sa = stash apply
+    ss = stash save
+    # }}}
+
+    # submodule {{{
+    subm-pull = submodule update --init --recursive
+    # }}}
+
+
+[submodule]
+    fetchJobs = 4
+
+[diff]
+    tool = meld
+    # NOTE: Available from Git 2.11 (Q4 2016)
+    wsErrorHighlight = all
+    algorithm = patience
+
+[difftool]
+    prompt = false
+
+[difftool "icdiff"]
+    cmd = icdiff --line-numbers $LOCAL $REMOTE
+
+[mergetool]
+    tool = mymeld
+    conflictStyle = diff3
+    prompt = no
+    # Auto-merge on files like yaml may give you headache. So prevent git from
+    # automatically prompt to commit upon successful merge
+    # TODO:2022-09-02: doesn't work? Still need `git merge --no-commit`
+    commit = no
+
+[mergetool "mymeld"]
+    # Inspired by: https://lukas.zapletalovi.com/2012/09/three-way-git-merging-with-meld.html
+    # Create 4 tabs:
+    cmd = meld $LOCAL $BASE $REMOTE -o $MERGED --auto-merge --diff $BASE $LOCAL --diff $BASE $REMOTE --diff $LOCAL $REMOTE
+
+    # with --auto-merge, you only need to resolve the conflicted chunks (red),
+    # git will resolve other unconflicted chunks.
+    # cmd = meld --auto-merge "$LOCAL" "$BASE" "$REMOTE" --output "$MERGED"
+    # useAutoMerge = true
+
+# NOTE: user/email config for personal github. Pick accordingly.
+#       includeIf requires git v2.13+
+#[includeIf "gitdir:~/path/to/personal/repo"]
+#    path = ~/dotfiles/personal.gitconfig
+#[include]
+#    path = ~/dotfiles/personal.gitconfig
+
+[submodule]
+    fetchjobs = 12
+[user]
+	email = banoris@protonmail.com
+	name = banoris

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Usage: fgr [/some/folder/] <filename>
+#
+if [ -n "${2}" ]; then
+    find "${1}" | grep -i "${2}"
+else
+    find | grep -i "${1}"
+fi

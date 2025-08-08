@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# USAGE: v test1.txt:245
+
+
+egrep -srnI --exclude-dir=.git --exclude-dir=ASDASD --exclude=tags --color=always "$@"
+
+

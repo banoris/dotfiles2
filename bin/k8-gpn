@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# get pod name from partial match
+
+kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep "$1"
+
+# if [[ $POD_NAME == *" "* ]]; then
+#     exit 1
+# else
+#     echo "$POD_NAME"
+# fi
