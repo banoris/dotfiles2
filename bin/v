@@ -8,7 +8,7 @@ main () {
     local MYVIM=''
     local MYFILE=''
 
-    if [[ -n $(which nvim) ]]; then
+    if [[ -n $(which nvim 2> /dev/null) ]]; then
         MYVIM='nvim -p'
     else
         MYVIM='vim -p'

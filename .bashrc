@@ -7,6 +7,8 @@
 # WA bash_profile in vscode remote ssh terminal
 [[ -f ~/dotfiles-eric/.bashrc.eric ]] && source ~/dotfiles-eric/.bashrc.eric
 
+BASHRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -63,42 +65,6 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
-
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-force_color_prompt=yes
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
-fi
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -114,15 +80,6 @@ fi
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -152,7 +109,7 @@ export PATH=$PATH:/usr/local/texlive/2020/bin/x86_64-linux
 # custom binaries
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.local/bin-amd64:$PATH
-export PATH=$HOME/dotfiles/bin:$PATH
+export PATH=$BASHRC_DIR/bin:$PATH
 
 # Clang, llvm
 export PATH=$PATH:$HOME/LLVM_10.0.1/bin
@@ -163,68 +120,14 @@ export PATH=$PATH:$HOME/go/bin
 # Erlang rebar
 export PATH=$PATH:~/.cache/rebar3/bin
 
-# BEGIN alias {{{
-# start with 'asd' for personal alias namespace
 
-# some more ls aliases
-alias ll='ls -ahlF'
-alias la='ls -A'
-alias l='ls -CF'
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-alias gvr='gvim --remote-tab'
-alias asdnoti='notify-send -t 0'
-alias install='sudo apt install'
-alias k='konsole'
-alias asdsshfast='ssh -XC -c blowfish-cbc,arcfour'
-alias noti='notify-send -t 0'
-alias dl='wget --no-check-certificate --user=biskhand --ask-password'
-alias asdbashrc='source ~/.bashrc'
-alias dirs='dirs -v'
-alias h="history | cut -c 8- | nvim -c 'set syntax=bash' -" # `cut` removes the line numbers in history
-# Need `--color=always` to preserve color when piped to another grep
-# NOTE: braces expansion won't work when there's only a single directory. --exclude-dir={.git}
-alias gr2='egrep -srnI --exclude-dir=.git --exclude=tags'
-alias cd2="cd ../.."
-alias cd3="cd ../../.."
-alias cd4="cd ../../../.."
-alias cd5="cd ../../../../.."
-
-alias adb1='adb -s R1J56L64e0f8df'
-alias adb2='adb -s R1J56L68fb9966'
-alias adb21='adb -s R1J56L32b70674'
-alias parallel='parallel --will-cite'
-alias gt='gnome-terminal'
-alias fgr-git='git ls-files | grep -i'
-alias g='git'
-alias kc='kubectl'
-
-# gnome-terminal --title="pod shell" --tab -- /bin/tcsh -c "kubectl exec -it $CONTAINER -- tcsh -c erl; bash"
-
-## USAGE: grep -sr SOMESTUFF | get-file-ext. Why? Grepping some magical
-## strings, check what kind of file has it, deduce something... rinse-n-repeat
-alias get-file-ext="awk -F. '{print \$NF}' | sort -u"
-
-# Copy to primary clipboard. E.g.: $ realpath /some/path | xc
-alias xc="xargs echo -n | xclip -selection c"
-alias psgrep="ps -ef | grep "
-
-# Download a file using curl.
-#   -L -- resolve redirect
-#   -O -- write output to local file
-#   Use netrc file for auth
-alias curl-dl="curl -OL --netrc-file ~/.netrc"
-
-if [[ -n $(which nvim) ]]; then
-    alias v-='nvim -'
-else
-    alias v-='vim -'
+if [ -f $BASHRC_DIR/.bash_aliases.sh ]; then
+    source $BASHRC_DIR/.bash_aliases.sh
 fi
-
-# END alias }}}
 
 ### BEGIN variables {{{
 
@@ -267,18 +170,62 @@ fi
 # export PS1="\[\e[1;36m\][\u@\h \w]\e[35m\$(__git_ps1 '[%s]')\e[0m\e[1;36m \D{%a %H:%M:%S}\n\j\$\[\e[m\] "
 # export PS1='\[\e[1;36m\][\u@\h \w]\e[35m\$(__git_ps1 "[%s]")\e[0m\e[1;36m \D{%a %H:%M:%S}\n\$\[\e[m\] '
 
-case $(hostname -s) in
-    # use this color for local machine
-    EMB*)
-        prompt_color='\033[48;5;16m\033[38;5;46m'
-        ;;
-    *)
-        prompt_color='1;36m'
-        ;;
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
 esac
+
+# If this is an xterm set the title to user@host:dir
+# case "$TERM" in
+# xterm*|rxvt*)
+#     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+#     ;;
+# *)
+#     ;;
+# esac
+detect_platform() {
+    local uname_out
+    uname_out="$(uname -s)"
+
+    case "$uname_out" in
+        CYGWIN*|MINGW*|MSYS*)
+            echo "windows"
+            ;;
+        Linux*)
+            # Check if running under WSL
+            if grep -qi microsoft /proc/version 2>/dev/null; then
+                echo "wsl"
+            else
+                echo "linux"
+            fi
+            ;;
+        Darwin*)
+            echo "macos"
+            ;;
+        *)
+            echo "unknown"
+            ;;
+    esac
+}
+
+platform=$(detect_platform)
+
+# case $(hostname) in
+#     # use this color for local machine
+#     EMB*)
+#         prompt_color='\033[48;5;16m\033[38;5;46m'
+#         ;;
+#     *)
+#         prompt_color='1;36m'
+#         ;;
+# esac
 # \j - number of background jobs. Show only if job exists
 # export PS1="\[\e[1;36m\][\u@\h \w]\e[35m\$(__git_ps1 '[%s]')[\$(__k8_ps1)]\e[0m\e[1;36m \D{%a %H:%M:%S}\n\$([ \j -gt 0 ] && echo [\j])\$\[\e[m\] "
-export PS1="\[\e[1;36m\][\u@\h \w]\e[35m[\$(__k8_ps1)]\e[0m\e[1;36m \D{%a %H:%M:%S}\n\$([ \j -gt 0 ] && echo [\j])\$\[\e[m\] "
+# NOTE: just use the default MINGW/Cygwin PS1. Too much headache to make below work with git prompt.
+if [[ "$platform" != "windows" ]]; then
+    export PS1="\[\e[1;36m\][\u@\h \w]\e[35m[\$(__k8_ps1)]\e[0m\e[1;36m \D{%a %H:%M:%S}\n\$([ \j -gt 0 ] && echo [\j])\$\[\e[m\] "
+fi
+
 
 # less setting
 #export LESS='-XFR'
@@ -357,10 +304,12 @@ stty -ixon
 
 [[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
 [[ -f ~/.bash_tmux_completion ]] && source ~/.bash_tmux_completion
-[[ -f ~/dotfiles/.git-completion.bash ]] && source ~/dotfiles/.git-completion.bash
-[[ -f ~/dotfiles/.kubectl-completion.bash ]] && source ~/dotfiles/.kubectl-completion.bash
-[[ -f ~/dotfiles/completions/helm-completion.bash ]] && source ~/dotfiles/completions/helm-completion.bash
-[[ -f ~/dotfiles/k8-namespace-prompt.sh ]] && source ~/dotfiles/k8-namespace-prompt.sh
+[[ -f $BASHRC_DIR/.git-completion.bash ]] && source $BASHRC_DIR/.git-completion.bash
+[[ -f $BASHRC_DIR/.kubectl-completion.bash ]] && source $BASHRC_DIR/.kubectl-completion.bash
+[[ -f $BASHRC_DIR/completions/helm-completion.bash ]] && source $BASHRC_DIR/completions/helm-completion.bash
+[[ -f $BASHRC_DIR/k8-namespace-prompt.sh ]] && source $BASHRC_DIR/k8-namespace-prompt.sh
+[[ -f ~/.kubech/kubech ]] && source ~/.kubech/kubech
+[[ -f ~/.kubech/completion/kubech.bash ]] && source ~/.kubech/completion/kubech.bash
 
 # Setup autocomplete for aliases
 #  Note: without 'nospace' a backslash will appear after completion
@@ -375,9 +324,6 @@ complete -o default -F __start_kubectl kc
 
 # ble.sh
 [[ ${BLE_VERSION-} ]] && ble-attach
-
-source ~/.kubech/kubech
-source ~/.kubech/completion/kubech.bash
 
 # NOTE: put at top
 # # WA bash_profile in vscode remote ssh terminal
