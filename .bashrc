@@ -7,7 +7,33 @@
 # WA bash_profile in vscode remote ssh terminal
 [[ -f ~/dotfiles-eric/.bashrc.eric ]] && source ~/dotfiles-eric/.bashrc.eric
 
-BASHRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+detect_platform() {
+    local uname_out
+    uname_out="$(uname -s)"
+
+    case "$uname_out" in
+        CYGWIN*|MINGW*|MSYS*)
+            echo "windows"
+            ;;
+        Linux*)
+            # Check if running under WSL
+            if grep -qi microsoft /proc/version 2>/dev/null; then
+                echo "wsl"
+            else
+                echo "linux"
+            fi
+            ;;
+        Darwin*)
+            echo "macos"
+            ;;
+        *)
+            echo "unknown"
+            ;;
+    esac
+}
+platform=$(detect_platform)
+
+DOTFILES_DIR=$HOME/dotfiles2
 
 # If not running interactively, don't do anything
 case $- in
@@ -16,12 +42,12 @@ case $- in
 esac
 
 # ble.sh causes issue with VSCode Remote SSH
-if [[ $- == *i* ]] && [[ -f "$HOME/dotfiles/ble.sh/out/ble.sh" ]] && [[ -z "$VSCODE_IPC_HOOK_CLI" ]] && [[ -n "$SSH_TTY" ]]; then
-    # Slow tab autocomplete, string matching to suggested output
-    # OK after IT restart session. Probably some expensive zombie proc
-    source $HOME/dotfiles/ble.sh/out/ble.sh --noattach
-    # echo NO BLE
-fi
+# if [[ $- == *i* ]] && [[ -f "$DOTFILES_DIR/ble.sh/out/ble.sh" ]] && [[ -z "$VSCODE_IPC_HOOK_CLI" ]] && [[ -n "$SSH_TTY" ]]; then
+#     # Slow tab autocomplete, string matching to suggested output
+#     # OK after IT restart session. Probably some expensive zombie proc
+#     source $HOME/dotfiles/ble.sh/out/ble.sh --noattach
+#     # echo NO BLE
+# fi
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -109,7 +135,7 @@ export PATH=$PATH:/usr/local/texlive/2020/bin/x86_64-linux
 # custom binaries
 export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.local/bin-amd64:$PATH
-export PATH=$BASHRC_DIR/bin:$PATH
+export PATH=$DOTFILES_DIR/bin:$PATH
 
 # Clang, llvm
 export PATH=$PATH:$HOME/LLVM_10.0.1/bin
@@ -125,8 +151,8 @@ export PATH=$PATH:~/.cache/rebar3/bin
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-if [ -f $BASHRC_DIR/.bash_aliases.sh ]; then
-    source $BASHRC_DIR/.bash_aliases.sh
+if [ -f $DOTFILES_DIR/.bash_aliases.sh ]; then
+    source $DOTFILES_DIR/.bash_aliases.sh
 fi
 
 ### BEGIN variables {{{
@@ -183,33 +209,6 @@ esac
 # *)
 #     ;;
 # esac
-detect_platform() {
-    local uname_out
-    uname_out="$(uname -s)"
-
-    case "$uname_out" in
-        CYGWIN*|MINGW*|MSYS*)
-            echo "windows"
-            ;;
-        Linux*)
-            # Check if running under WSL
-            if grep -qi microsoft /proc/version 2>/dev/null; then
-                echo "wsl"
-            else
-                echo "linux"
-            fi
-            ;;
-        Darwin*)
-            echo "macos"
-            ;;
-        *)
-            echo "unknown"
-            ;;
-    esac
-}
-
-platform=$(detect_platform)
-
 # case $(hostname) in
 #     # use this color for local machine
 #     EMB*)
@@ -304,10 +303,10 @@ stty -ixon
 
 [[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
 [[ -f ~/.bash_tmux_completion ]] && source ~/.bash_tmux_completion
-[[ -f $BASHRC_DIR/.git-completion.bash ]] && source $BASHRC_DIR/.git-completion.bash
-[[ -f $BASHRC_DIR/.kubectl-completion.bash ]] && source $BASHRC_DIR/.kubectl-completion.bash
-[[ -f $BASHRC_DIR/completions/helm-completion.bash ]] && source $BASHRC_DIR/completions/helm-completion.bash
-[[ -f $BASHRC_DIR/k8-namespace-prompt.sh ]] && source $BASHRC_DIR/k8-namespace-prompt.sh
+[[ -f $DOTFILES_DIR/.git-completion.bash ]] && source $DOTFILES_DIR/.git-completion.bash
+[[ -f $DOTFILES_DIR/.kubectl-completion.bash ]] && source $DOTFILES_DIR/.kubectl-completion.bash
+[[ -f $DOTFILES_DIR/completions/helm-completion.bash ]] && source $DOTFILES_DIR/completions/helm-completion.bash
+[[ -f $DOTFILES_DIR/k8-namespace-prompt.sh ]] && source $DOTFILES_DIR/k8-namespace-prompt.sh
 [[ -f ~/.kubech/kubech ]] && source ~/.kubech/kubech
 [[ -f ~/.kubech/completion/kubech.bash ]] && source ~/.kubech/completion/kubech.bash
 
